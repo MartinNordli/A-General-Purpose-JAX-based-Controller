@@ -1,27 +1,24 @@
-import numpy as np
-import jax
-import jax.numpy as jnp
+from config import Config
+from plants.Bathtub import BathtubPlant
 
-def jaxf1(x,y):
-    q = x**2 + 8
-    z = q**3 + 5*x*y
+def run():
+    active_plant_name = "Bathtub"
 
-    return z
+    if active_plant_name == "Bathtub":
+        plant = BathtubPlant(
+            area = Config.BATHTUB_AREA,
+            drain_c = Config.BATHTUB_DRAIN_C,
+            initial_height = Config.BATHTUB_H0,
+            target_height = Config.BATHTUB_TARGET
+        )
+    # elif active_plant_name == "Cournot"...
 
-def jaxf2(x,y):
-    z = 1
-    for i in range(int(y)):
-        z *= (x*float(i))
+    print(f"Plant initialized: {active_plant_name}")
+    print(f"Initial State: {plant.reset()}")
 
-    return z
+    new_state = plant.update(control_signal=0.5, disturbance=0.1)
+    print(f"State after 1 step: {new_state}")
 
-def jaxf3(x,y):
-    return x**y
 
-df3a = jax.grad(jaxf3, argnums=0)
-df3b = jax.grad(jaxf3, argnums=1)
-df3c = jax.grad(jaxf3, argnums=[0,1])
-
-print(df3a(2.0, 3.0))
-print(df3b(2.0, 3.0))
-print(df3c(2.0, 3.0))
+if __name__ == "__main__":
+    run() 
