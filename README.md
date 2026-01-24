@@ -1,12 +1,4 @@
-Her er et forslag til en profesjonell `README.md`. Den er strukturert for å vise at du har forstått både teknologien (JAX) og designprinsippene (Modulæritet/"The Critical Divide").
-
-Du kan kopiere hele teksten nedenfor inn i en fil som heter `README.md` i rotmappen din.
-
----
-
 # General Purpose JAX Controller
-
-**Course:** IT-3105 AI Programming
 
 **Language:** Python 3 (JAX)
 
