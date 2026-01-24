@@ -2,43 +2,67 @@ import jax.numpy as jnp
 from plants.Base_plant import BasePlant
 
 class BathtubPlant(BasePlant):
+    """
+    The system simulates the water level height (H) in a bathtub with a constant
+    cross-sectional area (A) and a drain with cross-sectional area (C).
+    """
     def __init__(self, area, drain_c, initial_height, target_height):
-        self.area = area
-        self.drain_c = drain_c
-        self.initial_height = initial_height
-        self.g = 9.8
-        self.current_h = initial_height
+        self.area = area      # Cross-sectional area of the bathtub (A)
+        self.drain_c = drain_c # Cross-sectional area of the drain (C)
+        self.H0 = initial_height
         self.target = target_height
-    
-    def reset(self):
-        self.current_h = self.initial_height
-        return self.current_h
-    
+        self.g = 9.8          # Gravitational constant
+
     def get_target(self):
-        """
-        The goal is to keep the waterlevel stable at the initial height.
-        """
         return self.target
     
-    def update(self, control_signal, disturbance):
-        g = self.g
-        H = self.current_h
-        H_safe = jnp.maximum(H, 0.0) # To avoid negative values for H and thus a negative root.
-        A = self.area
-        C = self.drain_c
-        V = jnp.sqrt(2 * g * H_safe)
-        Q = V * C
+    def reset(self):
+        """Resets the internal state (used if running outside JAX scan)."""
+        self.current_h = self.initial_height
+        return self.current_h
+
+    def get_initial_state(self):
+        """Returns the initial state (height) as a JAX array."""
+        return jnp.array(self.H0)
+
+    def update(self, state, control_signal, disturbance):
+        """
+        Calculates the state transition for one timestep.
+        
+        Physics dynamics:
+        1. Velocity out: V = sqrt(2 * g * H)
+        2. Flow rate out: Q = V * C
+        3. Volume change: dB = U + D - Q
+        4. Height change: dH = dB / A
+
+        Args:
+            state (float): Current water height (H).
+            control_signal (float): Inflow controlled by the agent (U).
+            disturbance (float): Random noise/inflow (D).
+
+        Returns:
+            new_H (float): The updated water height.
+        """
+        H = state
         U = control_signal
         D = disturbance
-
-        # The change in volume
+        
+        # Enforce non-negative height constraint. 
+        # Prevents numerical instability (NaN) when taking the square root.
+        H_safe = jnp.maximum(H, 0.0)
+        
+        # Calculate velocity
+        V = jnp.sqrt(2 * self.g * H_safe)
+        
+        # Calculate the flow rate of exiting water
+        Q = V * self.drain_c
+        
+        # Calculate change in volume (Inflow - Outflow)
         dB = U + D - Q
-
-        # The change in height
-        dH = dB / A
-
-        # Update the state
-        self.current_h = H + dH
-
-        return self.current_h
-    
+        
+        # Calculate change in height based on volume change
+        dH = dB / self.area
+        
+        # Update state
+        new_H = H + dH
+        return new_H
