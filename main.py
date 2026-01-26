@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import numpy as np
 from config import Config
 from consys import Consys
-from utils.visualization import plot_results
+from utils.visualization import plot_results, plot_system_response
 
 # Import specific plants and controllers
 from plants.Bathtub import BathtubPlant
@@ -34,7 +34,10 @@ def main():
         plant = CournotPlant(
             p_max=Config.COURNOT_P_MAX,
             cm=Config.COURNOT_CM,
-            target_profit=Config.COURNOT_TARGET_PROFIT
+            target_profit=Config.COURNOT_TARGET_PROFIT,
+            # NYTT: Send inn startverdiene
+            q1_start=Config.COURNOT_Q1_START,
+            q2_start=Config.COURNOT_Q2_START
         )
     else:
         raise ValueError(f"Invalid plant selected in Config: {Config.PLANT_TO_RUN}")
@@ -111,6 +114,24 @@ def main():
         plot_results(mse_history, param_history)
     else:
         plot_results(mse_history)
+    
+    # ==========================================
+    # 4. Final Simulation Check
+    # ==========================================
+    print("\nRunning verification simulation...")
+    
+    test_disturbances = np.random.uniform(
+        low=-Config.DISTURBANCE, 
+        high=Config.DISTURBANCE, 
+        size=(Config.TIMESTEPS_PER_EPOCH,)
+    )
+    test_disturbances = jnp.array(test_disturbances)
+
+    # Run a simulation using the best parameters (current).
+    final_history = system.run_simulation(current_params, test_disturbances)
+    
+    target_val = plant.get_target() if Config.PLANT_TO_RUN == "Bathtub" else None
+    plot_system_response(final_history, target=target_val)
 
 if __name__ == "__main__":
     main()

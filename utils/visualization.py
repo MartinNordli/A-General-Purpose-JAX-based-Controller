@@ -44,3 +44,35 @@ def plot_results(mse_history, param_history=None):
 
     plt.tight_layout()
     plt.show() # Eller plt.savefig('result.png')
+
+def plot_system_response(state_history, target=None):
+    """
+    Plots how the system will change over time (one epoch).
+    """
+    # Convert jax-arrays to numpy-arrays for plotting.
+    history = np.array(state_history)
+    timesteps = np.arange(len(history))
+    
+    plt.figure(figsize=(10, 6))
+    
+    # Check whether we have 1 variable (Bathtub) or two (Cournot).
+    if history.ndim == 1 or history.shape[1] == 1:
+        # --- Bathtub ---
+        plt.plot(timesteps, history, label='Water Level (H)', color='blue')
+        if target is not None:
+            plt.axhline(y=target, color='r', linestyle='--', label='Target')
+        plt.ylabel("Height")
+        plt.title("System Response: Bathtub")
+        
+    elif history.shape[1] == 2:
+        # --- Cournot ---
+        plt.plot(timesteps, history[:, 0], label='Agent (q1)', color='blue')
+        plt.plot(timesteps, history[:, 1], label='Competitor (q2)', color='orange', linestyle=':')
+        
+        plt.ylabel("Production Quantity (q)")
+        plt.title("System Response: Cournot Competition")
+
+    plt.xlabel("Timestep")
+    plt.legend()
+    plt.grid(True)
+    plt.show()

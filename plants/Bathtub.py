@@ -24,6 +24,10 @@ class BathtubPlant(BasePlant):
     def get_initial_state(self):
         """Returns the initial state (height) as a JAX array."""
         return jnp.array(self.H0)
+    
+    def get_output(self, state):
+        """The water height is the same as the state"""
+        return state
 
     def update(self, state, control_signal, disturbance):
         """

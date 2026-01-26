@@ -20,6 +20,19 @@ class BasePlant(ABC):
         pass
 
     @abstractmethod
+    def get_initial_state(self):
+        pass
+
+    @abstractmethod
+    def get_output(self, state):
+        """
+        Beregner den observerbare verdien (Y) fra tilstanden.
+        For Badekar: Returnerer H.
+        For Cournot: Returnerer Profit.
+        """
+        pass
+
+    @abstractmethod
     def update(self, control_signal, disturbance):
         """
         Runs one timestep.

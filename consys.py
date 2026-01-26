@@ -42,7 +42,7 @@ class Consys:
             plant_state, controller_state = carry
             
             # Calculate Error (E = Target - Output)
-            current_y = plant_state 
+            current_y = self.plant.get_output(plant_state)
             error = target - current_y
             
             # Computes the control signal (U) and the new internal state of the controller.
@@ -65,3 +65,27 @@ class Consys:
         mse = jnp.mean(squared_errors)
         
         return mse
+    
+    def run_simulation(self, params, disturbance_array):
+        """
+        Runs a simulation without calculating gradients to get data for plotting.
+        Retunrs the history of states (State History).
+        """
+        target = self.plant.get_target()
+        init_carry = (self.plant.get_initial_state(), self.controller.get_initial_state())
+
+        def step_fn(carry, disturbance_t):
+            plant_state, controller_state = carry
+            
+            current_y = self.plant.get_output(plant_state)
+            error = target - current_y
+            u, new_controller_state = self.controller.update(params, controller_state, error, dt=1.0)
+            new_plant_state = self.plant.update(plant_state, u, disturbance_t)
+            
+            new_carry = (new_plant_state, new_controller_state)
+    
+            return new_carry, plant_state
+
+        final_carry, history = jax.lax.scan(step_fn, init_carry, disturbance_array)
+        
+        return history
