@@ -9,7 +9,7 @@ from utils.visualization import plot_results, plot_system_response
 from plants.Bathtub import BathtubPlant
 from plants.Cournot import CournotPlant
 from controllers.Classic_controller import ClassicController
-# from controllers.Neural_network_controller import NeuralNetworkController  # Uncomment when implemented
+from controllers.Neural_network_controller import NeuralNetworkController
 
 def main():
     """
@@ -53,10 +53,11 @@ def main():
         current_params = controller.initial_params
         
     elif Config.CONTROLLER_TO_USE == "NeuralNet":
-        # Placeholder for Neural Network initialization
-        # controller = NeuralNetworkController(...) 
-        # current_params = controller.init_weights(...) 
-        raise NotImplementedError("Neural Network Controller is not yet fully implemented in main.py")
+        controller = NeuralNetworkController(
+            layer_sizes=Config.NN_LAYER_SIZES,
+            activation_function=Config.NN_ACTIVATION
+        )
+        current_params = controller.initial_params
     else:
         raise ValueError(f"Invalid controller selected in Config: {Config.CONTROLLER_TO_USE}")
 
@@ -90,9 +91,11 @@ def main():
         # Execute simulation and compute gradients
         loss, grads = grad_fn(current_params, disturbances)
         
-        # Update Controller Parameters (Gradient Descent)
-        # w_new = w_old - learning_rate * gradient
-        current_params = current_params - (Config.LEARNING_RATE * grads)
+        current_params = jax.tree_util.tree_map(
+            lambda p, g: p - Config.LEARNING_RATE * g,
+            current_params,
+            grads
+        )
         
         # Record history
         mse_history.append(loss)
