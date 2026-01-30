@@ -8,6 +8,7 @@ from utils.visualization import plot_results, plot_system_response
 # Import specific plants and controllers
 from plants.Bathtub import BathtubPlant
 from plants.Cournot import CournotPlant
+from plants.Drone import DronePlant
 from controllers.Classic_controller import ClassicController
 from controllers.Neural_network_controller import NeuralNetworkController
 
@@ -35,9 +36,14 @@ def main():
             p_max=Config.COURNOT_P_MAX,
             cm=Config.COURNOT_CM,
             target_profit=Config.COURNOT_TARGET_PROFIT,
-            # NYTT: Send inn startverdiene
             q1_start=Config.COURNOT_Q1_START,
             q2_start=Config.COURNOT_Q2_START
+        )
+    elif Config.PLANT_TO_RUN == "Drone":
+        plant = DronePlant(
+            mass=Config.DRONE_MASS,
+            init_height=Config.DRONE_INITIAL_HEIGHT,
+            target_height=Config.DRONE_TARGET
         )
     else:
         raise ValueError(f"Invalid plant selected in Config: {Config.PLANT_TO_RUN}")
@@ -91,11 +97,16 @@ def main():
         # Execute simulation and compute gradients
         loss, grads = grad_fn(current_params, disturbances)
         
+        grads = jax.tree_util.tree_map(lambda g: jnp.clip(g, -1.0, 1.0), grads)
+
         current_params = jax.tree_util.tree_map(
             lambda p, g: p - Config.LEARNING_RATE * g,
             current_params,
             grads
         )
+
+        if Config.CONTROLLER_TO_USE == "Classic":
+             current_params = jax.tree_util.tree_map(lambda p: jnp.maximum(p, 0.0), current_params)
         
         # Record history
         mse_history.append(loss)
@@ -134,7 +145,7 @@ def main():
     final_history = system.run_simulation(current_params, test_disturbances)
     
     target_val = plant.get_target() if Config.PLANT_TO_RUN == "Bathtub" else None
-    plot_system_response(final_history, target=target_val)
+    plot_system_response(final_history, plant_name=Config.PLANT_TO_RUN, target=target_val)
 
 if __name__ == "__main__":
     main()
