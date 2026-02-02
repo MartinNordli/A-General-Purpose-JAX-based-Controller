@@ -184,7 +184,7 @@ $$
 
 ![Figure 7: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/CL_COURNOT_LP.png)
 
-![Figure 8: This graph shows how the system evolves over time. The blue line represents the agents ideal production quantity, while the yellow-dotted line represents what the competitors production quantity is.](resources/results/CL_COURNOT_SR.png)
+![Figure 8: This graph shows how the system evolves over time. The blue line represents the agents ideal production quantity, while the yellow-dotted line represents what the competitors production quantity is.](resources/results/CL_CORNOT_SR.png)
 
 #### Neural-Network-Based Controller
 
