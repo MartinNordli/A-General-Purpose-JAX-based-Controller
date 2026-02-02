@@ -108,11 +108,11 @@ The project includes a dedicated visualization module that produces:
 
 ## Results
 
-This section reveals different results achieved by both the classic PID controller and the neural-network-based PID controller on three different plants: Bathtub, Cournot competition and Drone. The hyperparameterconfigurations for achieving these results will be given in each section.
+This section reveals different results achieved by both the classic PID controller and the neural-network-based PID controller on three different plants: Bathtub, Cournot competition and Drone. The hyperparameter configurations for achieving these results will be given in each section.
 
 ### Bathtub plant
 
-This is a simple system. It represents a classic control theory problem simulating the water level in a bathtub. The bathtub has a constant cross-sectional area (A) and a drain with a smaller cross-sectional area (C). 
+This is a simple system. It represents a classic control theory problem simulating the water level in a bathtub. The bathtub has a constant cross-sectional area (A) and a drain with a smaller cross-sectional area (C).
 
 **System Dynamics**
 The velocity ($V$) of water exiting the drain is derived from Torricelli's law, dependent on gravity ($g=9.8m/s^2$) and current water height ($H$):
@@ -139,16 +139,20 @@ The goal of the controller is to maintain the water level at a specific target h
 
 #### Classic Controller
 
-![Figure 3: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/CL_BATHTUB_LP.png)
+![Classic Controller Learning Progression](resources/results/CL_BATHTUB_LP.png)
+*Figure 3: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 4: This graph shows how the system evolves over time. The blue line represents the water-level and the red-dotted line represents the target water-level.](resources/results/CL_BATHTUB_SR.png)
+![Classic Controller System Response](resources/results/CL_BATHTUB_SR.png)
+*Figure 4: This graph shows how the system evolves over time. The blue line represents the water-level and the red-dotted line represents the target water-level.*
 
 
 #### Neural-Network-Based Controller
 
-![Figure 5: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/NN_BATHTUB_LP.png)
+![NN Controller Learning Progression](resources/results/NN_BATHTUB_LP.png)
+*Figure 5: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 6: This graph shows how the system evolves over time. The blue line represents the water-level and the red-dotted line represents the target water-level.](resources/results/NN_BATHTUB_SR.png)
+![NN Controller System Response](resources/results/NN_BATHTUB_SR.png)
+*Figure 6: This graph shows how the system evolves over time. The blue line represents the water-level and the red-dotted line represents the target water-level.*
 
 
 ### Cournot Competition
@@ -182,15 +186,19 @@ $$
 
 #### Classic Controller
 
-![Figure 7: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/CL_COURNOT_LP.png)
+![Classic Controller Learning Progression](resources/results/CL_COURNOT_LP.png)
+*Figure 7: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 8: This graph shows how the system evolves over time. The blue line represents the agents ideal production quantity, while the yellow-dotted line represents what the competitors production quantity is.](resources/results/CL_CORNOT_SR.png)
+![Classic Controller System Response](resources/results/CL_CORNOT_SR.png)
+*Figure 8: This graph shows how the system evolves over time. The blue line represents the agent's ideal production quantity, while the yellow-dotted line represents what the competitor's production quantity is.*
 
 #### Neural-Network-Based Controller
 
-![Figure 9: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/NN_COURNOT_LP.png)
+![NN Controller Learning Progression](resources/results/NN_COURNOT_LP.png)
+*Figure 9: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 10: This graph shows how the system evolves over time. The blue line represents the agents ideal production quantity, while the yellow-dotted line represents what the competitors production quantity is.](resources/results/NN_COURNOT_SR.png)
+![NN Controller System Response](resources/results/NN_COURNOT_SR.png)
+*Figure 10: This graph shows how the system evolves over time. The blue line represents the agent's ideal production quantity, while the yellow-dotted line represents what the competitor's production quantity is.*
 
 
 ### Drone flight plant
@@ -230,15 +238,19 @@ The controller's goal is to adjust the thrust ($U$) to navigate the drone from a
 
 #### Classic Controller
 
-![Figure 11: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/CL_DRONE_LP.png)
+![Classic Controller Learning Progression](resources/results/CL_DRONE_LP.png)
+*Figure 11: These graphs visualize how the learning progression for the classic controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 12: This graph shows how the system evolves over time. The blue line represents the drone´s altitude.](resources/results/CL_DRONE_SR.png)
+![Classic Controller System Response](resources/results/CL_DRONE_SR.png)
+*Figure 12: This graph shows how the system evolves over time. The blue line represents the drone's altitude.*
 
 #### Neural-Network-Based Controller
 
-![Figure 13: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.](resources/results/NN_DRONE_LP.png)
+![NN Controller Learning Progression](resources/results/NN_DRONE_LP.png)
+*Figure 13: These graphs visualize how the learning progression for the neural-network-based controller evolves over time, measured in mean squared error, as well as how the control parameters evolve over time.*
 
-![Figure 14: This graph shows how the system evolves over time. The blue line represents the drone´s altitude.](resources/results/NN_DRONE_SR.png)
+![NN Controller System Response](resources/results/NN_DRONE_SR.png)
+*Figure 14: This graph shows how the system evolves over time. The blue line represents the drone's altitude.*
 
 ## Conclusions
 
