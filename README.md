@@ -40,7 +40,7 @@ This project implements and compares two distinct control architectures. The **C
 │   ├── Base_plant.py        # Abstract base class for all plants
 │   ├── Bathtub.py           # Physics model of a bathtub with fluid dynamics
 │   ├── Cournot.py           # Economic simulation of quantity competition
-│   └── Plant3.py            # Custom domain implementation
+│   └── Drone.py             # Drone flight simulation
 │
 └── utils/
     └── visualization.py     # Plotting tools for MSE and parameter evolution
