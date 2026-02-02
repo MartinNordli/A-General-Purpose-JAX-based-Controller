@@ -1,42 +1,43 @@
+"""
+This file contains the configuration for the simulation.
+"""
 class Config:
 
     # ==========================================
     #  Plant and controller to use
     # ==========================================
 
-    PLANT_TO_RUN = "Drone" # Bathtub, Cournot or Drone
-    CONTROLLER_TO_USE = "NeuralNet" # Classic or NeuralNet
+    PLANT_TO_RUN = "Bathtub" # Bathtub, Cournot or Drone
+    CONTROLLER_TO_USE = "Classic" # Classic or NeuralNet
 
     # ==========================================
     # General configurations
     # ==========================================
 
     CONTROL_SIGNAL = 0.5
-    DISTURBANCE = 0.1 # 0.1 for bathtub
+    DISTURBANCE = 0.1
 
-    # CLASSIC: LR: 0.01 was good for bathtub, 0.001 for cournot.
-    # NeuralNet: LR: 0.0001, 400 epochs.
     LEARNING_RATE = 0.0001
-    NUM_EPOCHS = 30000
-    TIMESTEPS_PER_EPOCH = 1000
+    NUM_EPOCHS = 400
+    TIMESTEPS_PER_EPOCH = 200
 
     # ========================================= =
     # Classic controller configurations
     # ==========================================
 
-    PID_KP_START = 0.5 # 0.1
-    PID_KI_START = 0.01 # 0.01
-    PID_KD_START = 8.0 #0.01
+    PID_KP_START = 0.1
+    PID_KI_START = 0.01
+    PID_KD_START = 0.01
 
     # ==========================================
     # NeuralNet controller configurations
     # ==========================================
 
     # [5, 5] means 2 hidden layers with 5 neurons each.
-    NN_LAYER_SIZES = [10,10,10,10] 
+    NN_LAYER_SIZES = [5]
     
     # Activationfunctions: "relu", "sigmoid", eller "tanh"
-    NN_ACTIVATION = "relu"
+    NN_ACTIVATION = "tanh"
 
     # ==========================================
     # Bathtub configurations

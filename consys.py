@@ -2,15 +2,20 @@ import jax
 import jax.numpy as jnp
 from config import Config
 
-class Consys:
-    """
-    Control System wrapper.
+"""
+This class integrates a Plant and a Controller into a single feedback loop.
     
-    This class integrates a Plant and a Controller into a single feedback loop.
-    It handles the execution of simulation epochs using JAX to ensure the 
-    entire process is differentiable.
-    """
+It handles the execution of simulation epochs using JAX to ensure the 
+entire process is differentiable.
+"""
+class Consys:
+
     def __init__(self, plant, controller):
+        """Initializes the control system.
+
+        :param plant: The plant to use.
+        :param controller: The controller to use.
+        """
         self.plant = plant
         self.controller = controller
 
@@ -21,16 +26,14 @@ class Consys:
         Using `jax.lax.scan` allows for efficient compilation and Backpropagation 
         Through Time (BPTT) over the entire simulation history.
 
-        Args:
-            params: The trainable parameters of the controller (e.g., PID gains or Neural Net weights).
-            disturbance_array: An array of disturbance values (D) for every timestep in the epoch.
+        :param params: The trainable parameters of the controller (e.g., PID gains or Neural Net weights).
+        :param disturbance_array: An array of disturbance values (D) for every timestep in the epoch.
 
-        Returns:
-            mse: The Mean Squared Error (MSE) for the entire epoch.
+        :returns: The Mean Squared Error (MSE) for the entire epoch.
         """
         target = self.plant.get_target()
         
-        # Retrieve initial functional states from the components
+        # Retrieve initial functional states from the plant and controller
         init_plant_state = self.plant.get_initial_state()
         init_controller_state = self.controller.get_initial_state()
         
@@ -69,12 +72,24 @@ class Consys:
     def run_simulation(self, params, disturbance_array):
         """
         Runs a simulation without calculating gradients to get data for plotting.
-        Retunrs the history of states (State History).
+
+        :param params: The trainable parameters of the controller (e.g., PID gains or Neural Net weights).
+        :param disturbance_array: An array of disturbance values (D) for every timestep in the epoch.
+
+        :returns: The history of states (State History).
         """
         target = self.plant.get_target()
         init_carry = (self.plant.get_initial_state(), self.controller.get_initial_state())
 
         def step_fn(carry, disturbance_t):
+            """
+            Defines the single-step transition function for jax.lax.scan.
+
+            :param carry: The current state of the plant and controller.
+            :param disturbance_t: The disturbance value for the current timestep.
+
+            :returns: The new state of the plant and controller.
+            """
             plant_state, controller_state = carry
             
             current_y = self.plant.get_output(plant_state)

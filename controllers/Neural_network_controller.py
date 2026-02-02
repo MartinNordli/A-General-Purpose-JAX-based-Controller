@@ -2,21 +2,19 @@ import jax
 import jax.numpy as jnp
 from controllers.Base_controller import BaseController
 
+"""
+A Neural Network based PID controller.
+"""
 class NeuralNetworkController(BaseController):
-    """
-    A Neural Network based PID controller.
-    
-    Inputs:
-        Vector [error, integral_error, derivative_error]
-    
-    Architecture:
-        Input Layer (3 neurons) -> Hidden Layers -> Output Layer (1 neuron)
-    
-    Output:
-        Control signal U
-    """
 
     def __init__(self, layer_sizes, activation_function, seed=42):
+        """
+        Initializes the controller with the given parameters.
+
+        :param layer_sizes: List of integers representing the number of neurons in each layer.
+        :param activation_function: String representing the activation function to use.
+        :param seed: Random seed for reproducibility.
+        """
         self.layer_sizes = layer_sizes
         self.activation_function_name = activation_function.lower()
         self.key = jax.random.PRNGKey(seed)
@@ -24,7 +22,7 @@ class NeuralNetworkController(BaseController):
 
     def _init_network_params(self):
         """
-        Helper-function to initialize weights and biases for all layers.
+        Initializes weights and biases for all layers.
 
         Returns: A list of tuples: [(w1, b1), (w2, b2), ...].
         """
@@ -72,7 +70,7 @@ class NeuralNetworkController(BaseController):
         self.initial_params = new_params
     
     def get_initial_state(self):
-        # State vector: [integral_sum, prev_error]
+        """Returns the initial state of the controller."""
         return jnp.array([0.0, 0.0])
     
     def _activation(self, x):
@@ -88,13 +86,14 @@ class NeuralNetworkController(BaseController):
         
     def update(self, params, state, error, dt):
         """
-        Forward pass.
-        
-        Args:
-            params: List of (weight, bias)-tuples.
-            state: [integral_sum, prev_error]
-            error: float
-            dt: float
+        Forward pass through the neural network.
+
+        :param params: List of (weight, bias)-tuples.
+        :param state: [integral_sum, prev_error]
+        :param error: float
+        :param dt: float
+
+        :returns: Control signal U and the new state.
         """
         integral_sum, prev_error = state[0], state[1]
 
@@ -116,13 +115,11 @@ class NeuralNetworkController(BaseController):
         u_raw = jnp.dot(activation, w_final) + b_final
         u_val = u_raw[0]
 
-        # --- ENDRING START: Fartsgrense (Output Scaling) ---
+        # Output Scaling
         
-        # 1. Bruk Tanh for å tvinge verdien mellom -1.0 og 1.0
-        # 2. Gang med 0.1 for å si at maks endring er 10% per steg.
+        # Use Tanh to force the value between -1.0 and 1.0
+        # Multiply by 0.1 to say that the maximum change is 10% per step.
         u_constrained = jnp.tanh(u_val) * 0.1
-        
-        # --- ENDRING SLUTT ---
 
         new_state = jnp.array([new_integral_sum, error])
         

@@ -1,9 +1,17 @@
 from abc import ABC, abstractmethod
 
+"""
+This acts as a 'blueprint' for the other controllers.
+The controllers should be designed with respect to these methods.
+"""
 class BaseController(ABC):
 
     @abstractmethod
     def __init__(self, **kwargs):
+        """Initializes the controller.
+
+        :param kwargs: Keyword arguments.
+        """
         pass
 
     @abstractmethod
@@ -11,23 +19,19 @@ class BaseController(ABC):
         """
         Calculates the control signal based on the error.
         
-        :param error: Description
-        :param dt: Description
+        :param error: Difference between the result and target.
+        :param dt: Difference in time.
         """
         pass
     
     @abstractmethod
     def reset(self):
-        """
-        Resets the internal state (like integral history) before a new run.
-        """
+        """Resets the internal state (like integral history) before a new run."""
         pass
 
     @abstractmethod
     def get_params(self):
-        """
-        Returns the trainable parameters (k_p, k_i, k_d etc...).
-        """
+        """Returns the trainable parameters (k_p, k_i, k_d etc...)."""
         pass
 
     @abstractmethod

@@ -12,6 +12,11 @@ from plants.Drone import DronePlant
 from controllers.Classic_controller import ClassicController
 from controllers.Neural_network_controller import NeuralNetworkController
 
+"""
+Main execution loop for the JAX-based Control System.
+Selects plant and controller based on configuration, runs the training loop,
+and visualizes the results.
+"""
 def main():
     """
     Main execution loop for the JAX-based Control System.
@@ -20,7 +25,7 @@ def main():
     """
     
     # ==========================================
-    # 1. Initialization and Configuration
+    # Initialization and Configuration
     # ==========================================
     
     # --- Plant Selection ---
@@ -55,7 +60,6 @@ def main():
             ki=Config.PID_KI_START,
             kd=Config.PID_KD_START
         )
-        # For the classic controller, we initialize parameters from the config/class
         current_params = controller.initial_params
         
     elif Config.CONTROLLER_TO_USE == "NeuralNet":
@@ -82,17 +86,16 @@ def main():
     print(f"Starting training for Plant: {Config.PLANT_TO_RUN} using Controller: {Config.CONTROLLER_TO_USE}...")
 
     # ==========================================
-    # 2. Training Loop
+    # Training Loop
     # ==========================================
     for epoch in range(Config.NUM_EPOCHS):
         # Generate random disturbances for the entire epoch
-        # Using a uniform distribution based on the config settings
         disturbances = np.random.uniform(
             low=-Config.DISTURBANCE, 
             high=Config.DISTURBANCE, 
             size=(Config.TIMESTEPS_PER_EPOCH,)
         )
-        disturbances = jnp.array(disturbances) # Convert to JAX array
+        disturbances = jnp.array(disturbances)
 
         # Execute simulation and compute gradients
         loss, grads = grad_fn(current_params, disturbances)
@@ -119,18 +122,17 @@ def main():
             print(f"Epoch {epoch}: MSE = {loss:.5f}, Params = {param_str}")
 
     # ==========================================
-    # 3. Visualization
+    # Visualization
     # ==========================================
     print("\nTraining complete. Generating plots...")
     
-    # Only pass parameter history if using the Classic controller (as visualized in the assignment)
     if Config.CONTROLLER_TO_USE == "Classic":
         plot_results(mse_history, param_history)
     else:
         plot_results(mse_history)
     
     # ==========================================
-    # 4. Final Simulation Check
+    # Final Simulation Check
     # ==========================================
     print("\nRunning verification simulation...")
     
@@ -141,7 +143,7 @@ def main():
     )
     test_disturbances = jnp.array(test_disturbances)
 
-    # Run a simulation using the best parameters (current).
+    # Run a simulation using the best parameters (current_params).
     final_history = system.run_simulation(current_params, test_disturbances)
     
     target_val = plant.get_target() if Config.PLANT_TO_RUN == "Bathtub" else None

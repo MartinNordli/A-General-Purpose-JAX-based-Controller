@@ -1,17 +1,25 @@
 import jax.numpy as jnp
 from controllers.Base_controller import BaseController
 
+"""A classic PID controller."""
 class ClassicController(BaseController):
+    
     def __init__(self, kp, ki, kd):
+        """
+        Initializes the controller with the given parameters.
+
+        :param kp: Proportional gain
+        :param ki: Integral gain
+        :param kd: Derivative gain
+        """
         self.initial_params = jnp.array([kp, ki, kd])
 
     def get_initial_state(self):
-        """
-        Returns the starting state of the controller.
-        """
+        """Returns the starting state of the controller."""
         return jnp.array([0.0, 0.0])
 
     def reset(self):
+        """Resets the internal state of the controller."""
         self.integral_sum = 0.0
         self.prev_error = 0.0
         self.is_first_step = True
@@ -30,23 +38,25 @@ class ClassicController(BaseController):
         kp, ki, kd = params[0], params[1], params[2]
         integral_sum, prev_error = state[0], state[1]
 
-        # 1. Integral del
+        # Integral part
         new_integral_sum = integral_sum + (error * dt)
 
-        # 2. Derivert del
-        # Vi antar at prev_error er 0 ved start, så derivatet blir riktig nok.
+        # Derivative part
+        # We assume that prev_error is 0 at start, so the derivative is correct enough.
         d_error = (error - prev_error) / dt
 
-        # 3. Beregn U
+        # Calculate U
         u = (kp * error) + (ki * new_integral_sum) + (kd * d_error)
 
-        # Returner U og den nye tilstanden som skal brukes i neste steg
+        # Return U and the new state to be used in the next step
         new_state = jnp.array([new_integral_sum, error])
         
         return u, new_state
     
     def get_params(self):
-        return self.params
+        """Returns the initial parameters of the controller."""
+        return self.initial_params
     
     def update_params(self, new_params):
-        self.params = new_params
+        """Updates the parameters of the controller."""
+        self.initial_params = new_params

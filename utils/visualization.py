@@ -1,24 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""
+This module contains the functions for visualizing the results of the simulation.
+"""
 def plot_results(mse_history, param_history=None):
     """
-    Tegner grafene som kreves av oppgaven.
-    
-    Args:
-        mse_history: Liste med MSE-verdier per epoke.
-        param_history: (Valgfri) Liste/Array med PID-parametere per epoke.
-                       Form: (antall_epoker, 3) der kolonnene er kp, ki, kd.
+    Plots the learning progression and parameter evolution.
+
+    :param mse_history: List of MSE values per epoch.
+    :param param_history: Optional list/array of PID parameters per epoch.
+    :returns: None
     """
-    # Lag en figur med 1 eller 2 subplots avhengig av om vi har parametere
     num_plots = 2 if param_history is not None else 1
     fig, axes = plt.subplots(1, num_plots, figsize=(12, 5))
     
-    # Hvis vi bare har ett plot, pakk det inn i en liste for konsistens
     if num_plots == 1:
         axes = [axes]
 
-    # --- Plot 1: Læringsprogresjon (MSE) ---
+    # Plot 1: Learning Progression (MSE)
     ax1 = axes[0]
     ax1.plot(mse_history, label='MSE', color='black')
     ax1.set_title('Learning Progression')
@@ -26,10 +26,9 @@ def plot_results(mse_history, param_history=None):
     ax1.set_ylabel('Mean Squared Error (MSE)')
     ax1.grid(True)
     
-    # --- Plot 2: Kontrollparametere (Kun for PID) ---
+    # Plot 2: Control Parameters (Only for PID)
     if param_history is not None:
         ax2 = axes[1]
-        # Konverter til numpy array hvis det er en JAX array
         params = np.array(param_history)
         
         ax2.plot(params[:, 0], label='Kp')
@@ -43,42 +42,43 @@ def plot_results(mse_history, param_history=None):
         ax2.grid(True)
 
     plt.tight_layout()
-    plt.show() # Eller plt.savefig('result.png')
+    plt.show()
 
 def plot_system_response(state_history, plant_name, target=None):
     """
-    Plotter systemrespons tilpasset hver enkelt plante.
+    Plots the system response for each plant.
+
+    :param state_history: History of states.
+    :param plant_name: Name of the plant.
+    :param target: Optional target value.
+    :returns: None
     """
     history = np.array(state_history)
     timesteps = np.arange(len(history))
     
     plt.figure(figsize=(10, 6))
     
-    # --- BADEKAR ---
+    # Bathtub
     if plant_name == "Bathtub":
         plt.plot(timesteps, history, label='Water Level (H)', color='blue')
         plt.ylabel("Height (m)")
         
-    # --- COURNOT ---
+    # Cournot
     elif plant_name == "Cournot":
         plt.plot(timesteps, history[:, 0], label='Agent (q1)', color='blue')
         plt.plot(timesteps, history[:, 1], label='Competitor (q2)', color='orange', linestyle=':')
         plt.ylabel("Production Quantity")
 
-    # --- DRONE (NY) ---
+    # Drone
     elif plant_name == "Drone":
-        # history[:, 0] er Fart (vi plotter ikke den nå)
-        # history[:, 1] er Høyde
         velocity = history[:, 0]
         height = history[:, 1]
         
         plt.plot(timesteps, height, label='Drone Height', color='blue')
-        # Hvis du vil se farten også, kan du avkommentere linjen under:
-        # plt.plot(timesteps, velocity, label='Velocity', color='green', alpha=0.5)
         
         plt.ylabel("Height (m)")
 
-    # Tegn inn mållinjen hvis den finnes
+    # Draw target line if it exists
     if target is not None:
         plt.axhline(y=target, color='r', linestyle='--', label='Target')
 
