@@ -18,32 +18,34 @@ Strict adherence to the **Separation of Concerns** principle is central to this 
 
 ## The Controllers
 
-This project implements and compares two distinct control architectures. The **Classic PID Controller**, illustrated in Figure 1, functions by mapping the current error signal $e(t)$, its integral, and its derivative to a control output $u(t)$. This linear mapping relies on three discrete gain parameters—$k_p$, $k_i$, and $k_d$—which serve as the sole variables for tuning the system response. In contrast, the **Neural Network Controller** (Figure 2) introduces a non-linear, data-driven approach. While it ingests the same error metrics as inputs, the control signal $u(t)$ is synthesized through a neural architecture. Consequently, the optimization process shifts from adjusting three scalar gains to fine-tuning the extensive matrix of weights and biases within the network's layers.
+This project implements and compares two distinct control architectures. The **Classic PID Controller**, illustrated in Figure 1, functions by mapping the current error signal $e(t)$, its integral, and its derivative to a control output $u(t)$. This linear mapping relies on three discrete gain parameters— $k_p$, $k_i$, and $k_d$ —which serve as the sole variables for tuning the system response. In contrast, the **Neural Network Controller** (Figure 2) introduces a non-linear, data-driven approach. While it ingests the same error metrics as inputs, the control signal $u(t)$ is synthesized through a neural architecture. Consequently, the optimization process shifts from adjusting three scalar gains to fine-tuning the extensive matrix of weights and biases within the network's layers.
 
 ![Figure 1: Classic PID Controller](resources/PID%20Controller.png)
+*Figure 1: Classic PID Controller*
 
 ![Figure 2: Neural-Network-Based PID Controller](resources/NN%20Controller.png)
+*Figure 2: Neural-Network-Based PID Controller*
 
 ## File Structure
 
 ```text
-├── main.py                  # Entry point: Orchestrates training and visualization
-├── config.py                # Central configuration for hyperparameters and simulation settings
-├── consys.py                # System Wrapper: Implements the JAX-optimized simulation loop
+├── main.py                           # Entry point: Orchestrates training and visualization
+├── config.py                         # Central configuration for hyperparameters and simulation settings
+├── consys.py                         # System Wrapper: Implements the JAX-optimized simulation loop
 │
-├── controllers/             # Control Algorithms
-│   ├── Base_controller.py   # Abstract base class for all controllers
-│   ├── Classic_controller.py# PID implementation (Proportional-Integral-Derivative)
+├── controllers/                      # Control Algorithms
+│   ├── Base_controller.py            # Abstract base class for all controllers
+│   ├── Classic_controller.py.        # PID implementation (Proportional-Integral-Derivative)
 │   └── Neural_network_controller.py
 │
-├── plants/                  # Simulated Environments
-│   ├── Base_plant.py        # Abstract base class for all plants
-│   ├── Bathtub.py           # Physics model of a bathtub with fluid dynamics
-│   ├── Cournot.py           # Economic simulation of quantity competition
-│   └── Drone.py             # Drone flight simulation
+├── plants/                           # Simulated Environments
+│   ├── Base_plant.py                 # Abstract base class for all plants
+│   ├── Bathtub.py                    # Physics model of a bathtub with fluid dynamics
+│   ├── Cournot.py                    # Economic simulation of quantity competition
+│   └── Drone.py                      # Drone flight simulation
 │
 └── utils/
-    └── visualization.py     # Plotting tools for MSE and parameter evolution
+    └── visualization.py              # Plotting tools for MSE, parameter evolution and system evolution
 
 ```
 
