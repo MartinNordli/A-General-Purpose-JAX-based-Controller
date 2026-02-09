@@ -139,6 +139,25 @@ $$
 **Objective**
 The goal of the controller is to maintain the water level at a specific target height ($H_0$), compensating for both the continuous loss of water through the drain and random external disturbances.
 
+#### Configurations
+
+| Parameters      | Classic | NeuralNet |
+| --------------- | ------- | --------- |
+| Control_signal  | 0.5     | 0.5       |
+| Disturbance     | 0.1     | 0.01      |
+| Learning rate   | 0.01    | 0.1       |
+| Num epochs      | 400     | 1000      |
+| Timesteps       | 100     | 500       |
+| Kp              | 0.1     | 0.1       |
+| Ki              | 0.01    | 0.01      |
+| Kd              | 0.01    | 0.01      |
+| NN_Layers       | [5]     | [2,2]     |
+| Activation      | tanh    | tanh      |
+| Bathtub_area    | 10.0    | 10.0      |
+| Bathtub_drain_c | 0.1     | 0.1       |
+| Bathtub_h0      | 1.0     | 1.0       |
+| Bathtub_Target  | 5.0     | 5.0       |
+
 #### Classic Controller
 
 ![Classic Controller Learning Progression](resources/results/CL_BATHTUB_LP.png)
@@ -156,6 +175,7 @@ The goal of the controller is to maintain the water level at a specific target h
 ![NN Controller System Response](resources/results/NN_BATHTUB_SR.png)
 *Figure 6: This graph shows how the system evolves over time. The blue line represents the water-level and the red-dotted line represents the target water-level.*
 
+The classic controller quickly finds an optimal solution after arounf 25 epochs while the neural-network-based controller also finds an optimal solution in the same amount of time, but it also shows clear spikes in the MSE in contrast to the classic controller which is smooth throughout. Both controllers found a good solution.
 
 ### Cournot Competition
 
@@ -186,6 +206,26 @@ $$
 P_1 = q_1 \cdot (p(q) - c_m)
 $$
 
+#### Configurations
+
+| Parameters     | Classic | NeuralNet |
+| -------------- | ------- | --------- |
+| Control_signal | 0.5     | 0.5       |
+| Disturbance    | 0.01    | 0.01      |
+| Learning rate  | 0.001   | 0.0001    |
+| Num epochs     | 400     | 1000      |
+| Timesteps      | 100     | 100       |
+| Kp             | 0.1     | 0.1       |
+| Ki             | 0.01    | 0.01      |
+| Kd             | 0.01    | 0.01      |
+| NN_Layers      | [5]     | [5]       |
+| Activation     | tanh    | tanh      |
+| Q1             | 0.1     | 0.1       |
+| Q2             | 0.6     | 0.6       |
+| P_max          | 10      | 10        |
+| Cm             | 0.1     | 0.1       |
+| Target         | 2.5     | 2.5       |
+
 #### Classic Controller
 
 ![Classic Controller Learning Progression](resources/results/CL_COURNOT_LP.png)
@@ -202,6 +242,7 @@ $$
 ![NN Controller System Response](resources/results/NN_COURNOT_SR.png)
 *Figure 10: This graph shows how the system evolves over time. The blue line represents the agent's ideal production quantity, while the yellow-dotted line represents what the competitor's production quantity is.*
 
+The classic controller finds a good solution after about 100 epochs, then slowly continues to improve until 400 epochs. The neural-network-based controller struggles to find a good solution until around 175 epochs, but then the MSE quickly drops to around 0, which it upholds until the end. Both systems found a good solution.
 
 ### Drone flight plant
 
@@ -238,6 +279,23 @@ $$
 **Objective**
 The controller's goal is to adjust the thrust ($U$) to navigate the drone from an initial height ($H_0$) to a specific target altitude ($H_{target}$) and maintain a hover at that position.
 
+#### Configurations
+
+| Parameters        | Classic | NeuralNet |
+| ----------------- | ------- | --------- |
+| Control_signal    | 0.5     | 0.5       |
+| Disturbance       | 0.5     | 0.1       |
+| Learning rate     | 0.001   | 0.0001    |
+| Num epochs        | 20 000  | 30 000    |
+| Timesteps         | 300     | 1000      |
+| Kp                | 0.5     | 0.5       |
+| Ki                | 0.01    | 0.01      |
+| Kd                | 4.0     | 8.0       |
+| Activation        | tanh    | relu      |
+| DRONE_MASS        | 1.0     | 1.0       |
+| DRONE_INIT_HEIGHT | 20.0    | 20.0      |
+| DRONE_TARGET      | 50.0    | 50.0      |
+
 #### Classic Controller
 
 ![Classic Controller Learning Progression](resources/results/CL_DRONE_LP.png)
@@ -253,6 +311,8 @@ The controller's goal is to adjust the thrust ($U$) to navigate the drone from a
 
 ![NN Controller System Response](resources/results/NN_DRONE_SR.png)
 *Figure 14: This graph shows how the system evolves over time. The blue line represents the drone's altitude.*
+
+Both controllers find a good solution after aroind 10 000 epochs. The classic controller has a smooth graph indicating slow and steady improvement. The neural network-based controller is more unstable in the beginning, but smoothes out after 10 000 epochs. Both models found a good solution.
 
 ## Conclusions
 
